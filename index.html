@@ -218,99 +218,6 @@
       color: var(--highlight-color);
     }
 
-    .contact-section {
-      text-align: center;
-      margin-top: 3rem;
-    }
-
-    .contact-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: white;
-      background-color: var(--primary-color);
-      text-decoration: none;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      box-shadow: 0 4px 6px rgba(255, 107, 107, 0.3);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 15px rgba(255, 107, 107, 0.4);
-      background-color: var(--hover-color);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
-    }
-
-    .btn-outline:hover {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .copied-notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: rgba(76, 175, 80, 0.9);
-      color: #ffffff;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      z-index: 100;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .copied-notification.show {
-      opacity: 1;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 0;
-      color: var(--text-color);
-      margin-top: auto;
-      backdrop-filter: blur(5px);
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 16px 16px 0 0;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    .social-links a {
-      color: var(--text-color);
-      font-size: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .social-links a:hover {
-      color: var(--hover-color);
-      transform: translateY(-3px);
-    }
-
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .container {
@@ -327,11 +234,6 @@
       
       h2 {
         font-size: 1.5rem;
-      }
-      
-      .contact-buttons {
-        flex-direction: column;
-        align-items: center;
       }
       
       .letter-paragraph {
@@ -399,67 +301,63 @@
 
   <div class="container">
     <header>
-      <a href="#" class="logo">Appreciate</a>
+      <a href="#" class="logo">Appreciation</a>
     </header>
 
     <!-- Main Content -->
     <main class="main-content floating">
-      <h1>Hi GIANNN,<span class="heart">👋</span></h1>
+        <h1>Hi GIANNN,<span class="heart">👋</span></h1>
       
-      <div class="letter-content">
-        <p class="letter-paragraph">I just wanted to say… I'm honestly honored and happy knowing that someone had a crush on me—and that someone was you.</p>
-        
-        <p class="letter-paragraph">If you’re wondering if you ever had a chance… yeah, probably, if you gave it a shot. ;) Ay HAHAH but all in seriousness
-          I didn’t expect it to be you, honestly. But thank you for liking me, even when I didn’t know. I really appreciate it.</p>
-
-        <p class="letter-paragraph">You’re a good person, and it means a lot that someone like you saw something in me. Whether we stay friends or who knows what the future holds, I’m genuinely grateful for the thought, the effort, and just knowing how you felt.</p>
-        
-        <p class="letter-paragraph">As this school year ends, I probably won’t be online much. I’m planning to take some time to work on myself and focus on things I’ve kind of been ignoring. But just in case we don’t talk as often, I wanted to leave this here:</p>
-        
-        <div class="signature">
-          <p>Thank you for liking me.,</p>
-          <p>You made me smile more than you think. :)</p>
-          <p>Ritzzz</p>
+        <div class="letter-content">
+          <p class="letter-paragraph">I just wanted to say… I'm honestly honored and happy knowing that someone had a crush on me—and that someone was you.</p>
+          
+          <p class="letter-paragraph">If you’re wondering if you ever had a chance… yeah, probably, if you gave it a shot. ;) Ay HAHAH but all in seriousness
+            I didn’t expect it to be you, honestly. But thank you for liking me, even when I didn’t know. I really appreciate it.</p>
+  
+          <p class="letter-paragraph">You’re a good person, and it means a lot that someone like you saw something in me. Whether we stay friends or who knows what the future holds, I’m genuinely grateful for the thought, the effort, and just knowing how you felt.</p>
+          
+          <p class="letter-paragraph">As this school year ends, I probably won’t be online much. I’m planning to take some time to work on myself and focus on things I’ve kind of been ignoring. But just in case we don’t talk as often, I wanted to leave this here:</p>
+          
+          <div class="signature">
+            <p>Thank you for liking me.,</p>
+            <p>You made me smile more than you think. :)</p>
+            <p>Ritzzz</p>
+          </div>
         </div>
-      </div>
-    
-
+        
   <!-- Audio Element (hidden) -->
   <audio id="bgMusic" loop autoplay>
     <source src="music/background.mp3" type="audio/mpeg">
+    <source src="music/background.ogg" type="audio/ogg">
+    <source src="music/background.wav" type="audio/wav">
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    // Set current year in footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-
     // Background Music
     const bgMusic = document.getElementById('bgMusic');
     
-    // Set volume (0.0 to 1.0) - adjust this value to change the volume
-    bgMusic.volume = 0.2; // 20% volume - change this number as needed
+    // Set volume (0.0 to 1.0)
+    bgMusic.volume = 0.3;
 
-    // Try to autoplay the music (may be blocked by browser)
+    // Try to autoplay the music
     document.addEventListener('DOMContentLoaded', () => {
+      // First set the volume
+      bgMusic.volume = 0.3;
+      
+      // Then try to play
       const playPromise = bgMusic.play();
       
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           console.log('Autoplay was prevented:', error);
-          // Music will start when user interacts with page
+          // Start music on any user interaction
+          document.addEventListener('click', () => {
+            bgMusic.play().catch(e => console.log('Still prevented:', e));
+          }, { once: true });
         });
       }
     });
-
-    // Start music on any user interaction if it was blocked
-    document.addEventListener('click', () => {
-      if (bgMusic.paused) {
-        bgMusic.play().catch(error => {
-          console.log('Playback still prevented:', error);
-        });
-      }
-    }, { once: true });
 
     // Create falling hearts
     function createHearts() {
