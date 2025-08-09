@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcriber with Manual Editor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #ffffff;
+            --background-color: rgba(0, 0, 0, 0.3);
+            --text-color: #ffffff;
+            --hover-color: #00cec9;
+            --card-bg: rgba(0, 0, 0, 0.5);
+            --text-light: #dfe6e9;
+            --danger-color: #e74c3c;
+            --success-color: #00cec9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary-color), var(--hover-color));
+            border-radius: 6px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, var(--hover-color), var(--primary-color));
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
+        }
+
+        /* Background Video */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            filter: brightness(0.6);
+        }
+
+        .bg-video video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+        }
+
+        .main-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--hover-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #1dd1a1 100%);
+            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 20px rgba(0, 206, 201, 0.4);
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(108, 92, 231, 0.1);
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .upload-area:hover {
+            border-color: var(--hover-color);
+            background: rgba(0, 206, 201, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--success-color);
+            background: rgba(0, 206, 201, 0.2);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .upload-formats {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .video-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .video-column {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-time {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--hover-color);
+            font-weight: 600;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .editor-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .subtitle-item {
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .subtitle-item.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+            transform: translateX(5px);
+            background: rgba(108, 92, 231, 0.2);
+        }
+
+        .subtitle-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .time-input {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            width: 140px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.3);
+        }
+
+        .subtitle-text {
+            width: 100%;
+            min-height: 80px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            resize: vertical;
+            font-family: 'Poppins', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .subtitle-text:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.3);
+        }
+
+        .global-controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 25px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--hover-color) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            padding: 40px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .time-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .time-input {
+                width: 100%;
+            }
+            
+            .global-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Loading animation for buttons */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <div class="bg-video">
+        <video id="bgVideo" autoplay muted loop>
+            <source src="images/background.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
+
+    <!-- Audio Element (hidden) -->
+    <audio id="bgMusic" loop>
+        <source src="music/background.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container">
+        <h1>Video Transcriber with Manual Editor</h1>
+        
+        <div class="main-content">
+            <!-- Upload Section -->
+            <div id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Drag & drop your video here</div>
+                    <div class="upload-formats">
+                        Supported formats: MP4, AVI, MOV, MKV, WebM
+                    </div>
+                    <input type="file" id="fileInput" accept="video/*" style="display: none;">
+                </div>
+                <div class="progress-container" id="progressContainer" style="display: none;">
+                    <div class="progress-bar" id="progressBar"></div>
+                    <div class="progress-text" id="progressText">Uploading...</div>
+                </div>
+            </div>
+
+            <!-- Video Section -->
+            <div id="videoSection" class="video-section">
+                <div class="global-controls">
+                    <button class="btn btn-success" id="addSubtitleBtn">+ Add Subtitle</button>
+                    <button class="btn btn-secondary" id="syncTimeBtn">Sync to Current Time</button>
+                    <button class="btn" id="downloadBtn">Download Subtitles</button>
+                    <button class="btn btn-danger" id="uploadNewBtn">Upload New Video</button>
+                </div>
+                
+                <div class="video-grid">
+                    <div class="video-column">
+                        <video id="videoPlayer" controls>
+                            <track kind="subtitles" id="subtitleTrack" srclang="en" label="English" default>
+                        </video>
+                        <div class="video-time" id="videoTime">00:00:00.000</div>
+                    </div>
+                    
+                    <div class="video-column">
+                        <h3>Subtitle Editor</h3>
+                        <div class="editor-container" id="editorContainer">
+                            <div class="empty-state">
+                                No subtitles yet. Add your first subtitle or wait for automatic transcription to complete.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class VideoTranscriber {
+            constructor() {
+                this.subtitles = [];
+                this.currentVideoFile = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateVideoTime();
+                this.checkBackendConnection();
+                this.initAudio();
+            }
+
+            initAudio() {
+                const bgMusic = document.getElementById('bgMusic');
+                bgMusic.volume = 0.1;
+                
+                // Try to play background music on first user interaction
+                document.addEventListener('click', () => {
+                    if (bgMusic.paused) {
+                        bgMusic.play().catch(error => {
+                            console.log('Audio autoplay prevented:', error);
+                        });
+                    }
+                }, { once: true });
+            }
+
+            async checkBackendConnection() {
+                try {
+                    const response = await fetch('http://localhost:5000/health', { 
+                        method: 'GET',
+                        timeout: 5000 
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (!data.vosk_model_loaded) {
+                            console.warn('Backend is running but Vosk model is not loaded');
+                        }
+                        console.log('Backend connection successful');
+                    } else {
+                        this.showBackendWarning();
+                    }
+                } catch (error) {
+                    this.showBackendWarning();
+                }
+            }
+
+            showBackendWarning() {
+                const uploadArea = document.getElementById('uploadArea');
+                
+                uploadArea.innerHTML = `
+                    <div class="upload-icon" style="color: var(--danger-color);">⚠️</div>
+                    <div class="upload-text" style="color: var(--danger-color);">Backend Server Not Running</div>
+                    <div class="upload-formats" style="color: var(--text-light);">
+                        Please start the Flask backend server on http://localhost:5000<br>
+                        <small>Run: python app.py</small><br><br>
+                        <button class="btn btn-secondary" onclick="location.reload()">Retry Connection</button>
+                    </div>
+                `;
+                
+                uploadArea.style.pointerEvents = 'auto';
+                uploadArea.onclick = null;
+            }
+
+            bindEvents() {
+                // Upload area events
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+
+                // Video events
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.addEventListener('timeupdate', this.updateVideoTime.bind(this));
+                videoPlayer.addEventListener('timeupdate', this.updateActiveSubtitle.bind(this));
+
+                // Global control events
+                document.getElementById('addSubtitleBtn').addEventListener('click', this.addSubtitle.bind(this));
+                document.getElementById('syncTimeBtn').addEventListener('click', this.syncToCurrentTime.bind(this));
+                document.getElementById('downloadBtn').addEventListener('click', this.downloadSubtitles.bind(this));
+                document.getElementById('uploadNewBtn').addEventListener('click', this.uploadNewVideo.bind(this));
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.add('dragover');
+            }
+
+            handleDragLeave(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.remove('dragover');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                }
+            }
+
+            handleFileSelect(e) {
+                if (e.target.files.length > 0) {
+                    this.processFile(e.target.files[0]);
+                }
+            }
+
+            processFile(file) {
+                if (!file.type.startsWith('video/')) {
+                    alert('Please select a valid video file.');
+                    return;
+                }
+
+                this.currentVideoFile = file;
+                this.showVideoSection();
+                this.loadVideo(file);
+                this.uploadAndTranscribe(file);
+            }
+
+            showVideoSection() {
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('videoSection').style.display = 'block';
+            }
+
+            loadVideo(file) {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const videoURL = URL.createObjectURL(file);
+                videoPlayer.src = videoURL;
+            }
+
+            async uploadAndTranscribe(file) {
+                const progressContainer = document.getElementById('progressContainer');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+
+                progressContainer.style.display = 'block';
+
+                const formData = new FormData();
+                formData.append('video', file);
+
+                try {
+                    const xhr = new XMLHttpRequest();
+                    
+                    xhr.upload.addEventListener('progress', (e) => {
+                        if (e.lengthComputable) {
+                            const percentComplete = (e.loaded / e.total) * 100;
+                            progressBar.style.width = percentComplete + '%';
+                            progressText.textContent = `Uploading... ${Math.round(percentComplete)}%`;
+                        }
+                    });
+
+                    xhr.addEventListener('load', () => {
+                        if (xhr.status === 200) {
+                            progressText.textContent = 'Processing...';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    this.loadTranscription(response.subtitle_file);
+                                } else {
+                                    alert('Transcription failed: ' + (response.error || 'Unknown error'));
+                                    progressContainer.style.display = 'none';
+                                }
+                            } catch (e) {
+                                alert('Invalid response from server. Please check if the backend is running.');
+                                progressContainer.style.display = 'none';
+                            }
+                        } else {
+                            alert(`Upload failed with status ${xhr.status}. Please check if the backend is running on http://localhost:5000`);
+                            progressContainer.style.display = 'none';
+                        }
+                    });
+
+                    xhr.addEventListener('error', () => {
+                        alert('Connection failed. Please make sure the backend server is running on http://localhost:5000');
+                        progressContainer.style.display = 'none';
+                    });
+
+                    xhr.addEventListener('timeout', () => {
+                        alert('Upload timed out. Please try with a smaller file or check your connection.');
+                        progressContainer.style.display = 'none';
+                    });
+
+                    xhr.open('POST', 'http://localhost:5000/upload');
+                    xhr.timeout = 300000;
+                    xhr.send(formData);
+
+                } catch (error) {
+                    alert('Error uploading file: ' + error.message + '\n\nPlease make sure the backend server is running on http://localhost:5000');
+                    progressContainer.style.display = 'none';
+                }
+            }
+
+            async loadTranscription(filename) {
+                try {
+                    const response = await fetch(`http://localhost:5000/subtitles/${filename}`);
+                    if (response.ok) {
+                        const vttContent = await response.text();
+                        this.parseVTT(vttContent);
+                        this.renderEditor();
+                        this.updateVideoSubtitles();
+                        document.getElementById('progressContainer').style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error loading transcription:', error);
+                    document.getElementById('progressContainer').style.display = 'none';
+                }
+            }
+
+            parseVTT(vttContent) {
+                const lines = vttContent.split('\n');
+                let currentSubtitle = null;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    if (line.includes('-->')) {
+                        const times = line.split('-->');
+                        const start = this.parseTimeToSeconds(times[0].trim());
+                        const end = this.parseTimeToSeconds(times[1].trim());
+                        currentSubtitle = { start, end, text: '' };
+                    } else if (currentSubtitle && line && !line.startsWith('WEBVTT') && !line.match(/^\d+$/)) {
+                        currentSubtitle.text += (currentSubtitle.text ? ' ' : '') + line;
+                    } else if (currentSubtitle && !line) {
+                        this.subtitles.push(currentSubtitle);
+                        currentSubtitle = null;
+                    }
+                }
+                
+                if (currentSubtitle) {
+                    this.subtitles.push(currentSubtitle);
+                }
+            }
+
+            parseTimeToSeconds(timeString) {
+                const parts = timeString.split(':');
+                const seconds = parseFloat(parts[2]);
+                const minutes = parseInt(parts[1]);
+                const hours = parseInt(parts[0]);
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            formatTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                const milliseconds = Math.round((secs - Math.floor(secs)) * 1000);
+                const wholeSeconds = Math.floor(secs);
+                
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${wholeSeconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+            }
+
+            addSubtitle() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const currentTime = videoPlayer.currentTime || 0;
+                
+                const newSubtitle = {
+                    start: currentTime,
+                    end: currentTime + 3,
+                    text: ''
+                };
+                
+                this.subtitles.push(newSubtitle);
+                this.subtitles.sort((a, b) => a.start - b.start);
+                this.renderEditor();
+                this.updateVideoSubtitles();
+            }
+
+            syncToCurrentTime() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const currentTime = videoPlayer.currentTime;
+                
+                const activeIndex = this.getActiveSubtitleIndex();
+                if (activeIndex !== -1) {
+                    this.subtitles[activeIndex].start = currentTime;
+                    this.renderEditor();
+                    this.updateVideoSubtitles();
+                }
+            }
+
+            getActiveSubtitleIndex() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const currentTime = videoPlayer.currentTime;
+                
+                return this.subtitles.findIndex(subtitle => 
+                    currentTime >= subtitle.start && currentTime <= subtitle.end
+                );
+            }
+
+            renderEditor() {
+                const container = document.getElementById('editorContainer');
+                
+                if (this.subtitles.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No subtitles yet. Add your first subtitle or wait for automatic transcription to complete.</div>';
+                    return;
+                }
+                
+                container.innerHTML = this.subtitles.map((subtitle, index) => `
+                    <div class="subtitle-item" data-index="${index}">
+                        <div class="subtitle-controls">
+                            <button class="btn btn-secondary" onclick="app.playSubtitle(${index})">Play</button>
+                            <button class="btn btn-secondary" onclick="app.copySubtitle(${index})">Copy</button>
+                            <button class="btn btn-danger" onclick="app.deleteSubtitle(${index})">Delete</button>
+                        </div>
+                        <div class="time-inputs">
+                            <input type="text" class="time-input" value="${this.formatTime(subtitle.start)}" 
+                                   onchange="app.updateSubtitleTime(${index}, 'start', this.value)">
+                            <span style="color: var(--text-light);">→</span>
+                            <input type="text" class="time-input" value="${this.formatTime(subtitle.end)}" 
+                                   onchange="app.updateSubtitleTime(${index}, 'end', this.value)">
+                        </div>
+                        <textarea class="subtitle-text" placeholder="Enter subtitle text..." 
+                                  onchange="app.updateSubtitleText(${index}, this.value)">${subtitle.text}</textarea>
+                    </div>
+                `).join('');
+            }
+
+            playSubtitle(index) {
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.currentTime = this.subtitles[index].start;
+                videoPlayer.play();
+            }
+
+            copySubtitle(index) {
+                const original = this.subtitles[index];
+                const copy = {
+                    start: original.end,
+                    end: original.end + (original.end - original.start),
+                    text: original.text
+                };
+                
+                this.subtitles.splice(index + 1, 0, copy);
+                this.renderEditor();
+                this.updateVideoSubtitles();
+            }
+
+            deleteSubtitle(index) {
+                this.subtitles.splice(index, 1);
+                this.renderEditor();
+                this.updateVideoSubtitles();
+            }
+
+            updateSubtitleTime(index, type, value) {
+                const seconds = this.parseTimeToSeconds(value);
+                if (!isNaN(seconds)) {
+                    this.subtitles[index][type] = seconds;
+                    this.updateVideoSubtitles();
+                }
+            }
+
+            updateSubtitleText(index, text) {
+                this.subtitles[index].text = text;
+                this.updateVideoSubtitles();
+            }
+
+            updateVideoTime() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const timeDisplay = document.getElementById('videoTime');
+                
+                if (videoPlayer && timeDisplay) {
+                    const currentTime = videoPlayer.currentTime || 0;
+                    timeDisplay.textContent = this.formatTime(currentTime);
+                }
+                
+                requestAnimationFrame(() => this.updateVideoTime());
+            }
+
+            updateActiveSubtitle() {
+                const activeIndex = this.getActiveSubtitleIndex();
+                const items = document.querySelectorAll('.subtitle-item');
+                
+                items.forEach((item, index) => {
+                    item.classList.toggle('active', index === activeIndex);
+                });
+            }
+
+            generateVTT() {
+                let vtt = 'WEBVTT\n\n';
+                
+                this.subtitles.forEach((subtitle, index) => {
+                    const startTime = this.formatTime(subtitle.start);
+                    const endTime = this.formatTime(subtitle.end);
+                    
+                    vtt += `${index + 1}\n`;
+                    vtt += `${startTime} --> ${endTime}\n`;
+                    vtt += `${subtitle.text}\n\n`;
+                });
+                
+                return vtt;
+            }
+
+            updateVideoSubtitles() {
+                const videoPlayer = document.getElementById('videoPlayer');
+                const track = document.getElementById('subtitleTrack');
+                
+                const vttContent = this.generateVTT();
+                const blob = new Blob([vttContent], { type: 'text/vtt' });
+                const url = URL.createObjectURL(blob);
+                
+                // Remove old track and add new one
+                if (track.src) {
+                    URL.revokeObjectURL(track.src);
+                }
+                track.src = url;
+            }
+
+            downloadSubtitles() {
+                const vttContent = this.generateVTT();
+                const blob = new Blob([vttContent], { type: 'text/vtt' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'subtitles.vtt';
+                a.click();
+                
+                URL.revokeObjectURL(url);
+            }
+
+            uploadNewVideo() {
+                // Reset application state
+                this.subtitles = [];
+                this.currentVideoFile = null;
+                
+                // Reset UI
+                document.getElementById('uploadSection').style.display = 'block';
+                document.getElementById('videoSection').style.display = 'none';
+                document.getElementById('progressContainer').style.display = 'none';
+                document.getElementById('fileInput').value = '';
+                
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer.src) {
+                    URL.revokeObjectURL(videoPlayer.src);
+                    videoPlayer.src = '';
+                }
+            }
+        }
+
+        // Initialize the application
+        const app = new VideoTranscriber();
+
+        // Set up background video error handling
+        document.getElementById('bgVideo').addEventListener('error', function() {
+            console.log('Background video failed to load');
+            // Continue without background video
+        });
+    </script>
+</body>
+</html>
