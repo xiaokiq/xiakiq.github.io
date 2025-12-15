@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Transcriber with Manual Editor</title>
+    <title>School Badminton Handbook</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
         :root {
@@ -12,7 +12,7 @@
             --background-color: rgba(0, 0, 0, 0.3);
             --text-color: #ffffff;
             --hover-color: #00cec9;
-            --card-bg: rgba(0, 0, 0, 0.5);
+            --card-bg: rgba(0, 0, 0, 0.6); /* Slightly darker for text readability */
             --text-light: #dfe6e9;
             --danger-color: #e74c3c;
             --success-color: #00cec9;
@@ -25,11 +25,11 @@
         }
 
         body {
+            /* Kept the UI font for the interface elements */
             font-family: 'Poppins', sans-serif;
             background: #0a0a0a;
             min-height: 100vh;
             color: var(--text-color);
-            line-height: 1.6;
             overflow-x: hidden;
         }
 
@@ -50,12 +50,7 @@
             transition: all 0.3s ease;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg, var(--hover-color), var(--primary-color));
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.5);
-        }
-
-        /* Background Video */
+        /* Background Video Wrapper */
         .bg-video {
             position: fixed;
             top: 0;
@@ -64,7 +59,8 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
-            filter: brightness(0.6);
+            background: linear-gradient(135deg, #1e1e2e 0%, #000000 100%); /* Fallback if no video */
+            filter: brightness(0.5);
         }
 
         .bg-video video {
@@ -80,28 +76,39 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px; /* Narrower for readability */
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
             z-index: 1;
         }
 
-        h1 {
+        /* Main Title styling from your code */
+        h1.main-title {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
+            font-size: 3rem;
+            margin-bottom: 10px;
             color: var(--text-color);
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            font-weight: 600;
+            text-shadow: 0 4px 15px rgba(108, 92, 231, 0.6);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--hover-color);
+            margin-bottom: 40px;
+            font-weight: 300;
         }
 
         .main-content {
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            padding: 40px;
+            backdrop-filter: blur(15px);
+            padding: 50px; /* Increased padding for document feel */
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
             animation: fadeIn 1s ease-out;
@@ -112,6 +119,64 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- HANDBOOK SPECIFIC FORMATTING --- */
+        /* Implements: Arial, 12pt (approx 16px), Justified, 1.5 Spacing */
+        
+        .handbook-body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px; /* Equivalent to 12pt for web */
+            line-height: 1.5;
+            text-align: justify;
+            color: #f0f0f0;
+        }
+
+        .handbook-page {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+        }
+
+        .handbook-page:last-child {
+            border-bottom: none;
+        }
+
+        /* BOLD TITLES */
+        .handbook-body h1, 
+        .handbook-body h2, 
+        .handbook-body h3 {
+            font-weight: bold;
+            color: var(--hover-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-align: left;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .handbook-body h1 { font-size: 24px; border-left: 5px solid var(--primary-color); padding-left: 15px; }
+        .handbook-body h2 { font-size: 20px; color: var(--text-light); }
+        .handbook-body h3 { font-size: 18px; }
+
+        .handbook-body ul, .handbook-body ol {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .handbook-body li {
+            margin-bottom: 8px;
+        }
+
+        .handbook-body p {
+            margin-bottom: 20px;
+        }
+
+        /* Utility Buttons */
+        .btn-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
         .btn {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--hover-color) 100%);
             color: white;
@@ -120,11 +185,11 @@
             padding: 12px 24px;
             cursor: pointer;
             font-size: 16px;
-            transition: all 0.3s ease;
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
             box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn:hover {
@@ -132,840 +197,413 @@
             box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
         }
 
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-        }
-
-        .btn-secondary:hover {
-            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-        }
-
-        .btn-danger:hover {
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success-color) 0%, #1dd1a1 100%);
-            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
-        }
-
-        .btn-success:hover {
-            box-shadow: 0 8px 20px rgba(0, 206, 201, 0.4);
-        }
-
-        .upload-area {
-            border: 3px dashed var(--primary-color);
-            border-radius: 20px;
-            padding: 60px 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(108, 92, 231, 0.1);
-            margin-bottom: 20px;
-            backdrop-filter: blur(5px);
-        }
-
-        .upload-area:hover {
-            border-color: var(--hover-color);
-            background: rgba(0, 206, 201, 0.1);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--success-color);
-            background: rgba(0, 206, 201, 0.2);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        .upload-text {
-            font-size: 1.2rem;
-            color: var(--text-color);
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .upload-formats {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .video-section {
-            display: none;
-            margin-top: 30px;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .video-column {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        video {
+        /* Image Placeholders */
+        .image-placeholder {
             width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .video-time {
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--hover-color);
-            font-weight: 600;
-            margin-top: 10px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .editor-container {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-
-        .subtitle-item {
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-        }
-
-        .subtitle-item.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
-            transform: translateX(5px);
-            background: rgba(108, 92, 231, 0.2);
-        }
-
-        .subtitle-controls {
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .time-inputs {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
             align-items: center;
-        }
-
-        .time-input {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            font-family: 'Courier New', monospace;
-            width: 140px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            backdrop-filter: blur(5px);
-        }
-
-        .time-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.3);
-        }
-
-        .subtitle-text {
-            width: 100%;
-            min-height: 80px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            resize: vertical;
-            font-family: 'Poppins', sans-serif;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            backdrop-filter: blur(5px);
-        }
-
-        .subtitle-text:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.3);
-        }
-
-        .global-controls {
-            margin: 20px 0;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
             justify-content: center;
-        }
-
-        .progress-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
             margin: 20px 0;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .progress-bar {
-            height: 25px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--hover-color) 100%);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
-            position: relative;
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .progress-text {
-            text-align: center;
-            margin-top: 15px;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .empty-state {
-            text-align: center;
             color: var(--text-light);
-            font-style: italic;
-            padding: 40px;
-        }
-
-        h3 {
-            margin-bottom: 20px;
-            color: var(--text-color);
-            font-weight: 600;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
+            font-family: 'Poppins', sans-serif;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .upload-area {
-                padding: 40px 20px;
-            }
-            
-            .time-inputs {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .time-input {
-                width: 100%;
-            }
-            
-            .global-controls {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-        }
-
-        /* Loading animation for buttons */
-        .btn.loading {
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        .btn.loading::after {
-            content: '';
-            width: 16px;
-            height: 16px;
-            margin-left: 8px;
-            border: 2px solid transparent;
-            border-top: 2px solid currentColor;
-            border-radius: 50%;
-            display: inline-block;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            .main-content { padding: 25px; }
+            h1.main-title { font-size: 2rem; }
+            .handbook-body { font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <!-- Background Video -->
+    <!-- Background Video (Kept from your code) -->
     <div class="bg-video">
-        <video id="bgVideo" autoplay muted loop>
+        <video id="bgVideo" autoplay muted loop playsinline>
             <source src="images/background.mp4" type="video/mp4">
-            Your browser does not support HTML5 video.
+            <!-- Fallback color is handled in CSS -->
         </video>
     </div>
 
-    <!-- Audio Element (hidden) -->
-    <audio id="bgMusic" loop>
-        <source src="music/background.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <div class="container">
-        <h1>Video Transcriber with Manual Editor</h1>
-        
-        <div class="main-content">
-            <!-- Upload Section -->
-            <div id="uploadSection">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📁</div>
-                    <div class="upload-text">Drag & drop your video here</div>
-                    <div class="upload-formats">
-                        Supported formats: MP4, AVI, MOV, MKV, WebM
-                    </div>
-                    <input type="file" id="fileInput" accept="video/*" style="display: none;">
-                </div>
-                <div class="progress-container" id="progressContainer" style="display: none;">
-                    <div class="progress-bar" id="progressBar"></div>
-                    <div class="progress-text" id="progressText">Uploading...</div>
-                </div>
-            </div>
-
-            <!-- Video Section -->
-            <div id="videoSection" class="video-section">
-                <div class="global-controls">
-                    <button class="btn btn-success" id="addSubtitleBtn">+ Add Subtitle</button>
-                    <button class="btn btn-secondary" id="syncTimeBtn">Sync to Current Time</button>
-                    <button class="btn" id="downloadBtn">Download Subtitles</button>
-                    <button class="btn btn-danger" id="uploadNewBtn">Upload New Video</button>
-                </div>
-                
-                <div class="video-grid">
-                    <div class="video-column">
-                        <video id="videoPlayer" controls>
-                            <track kind="subtitles" id="subtitleTrack" srclang="en" label="English" default>
-                        </video>
-                        <div class="video-time" id="videoTime">00:00:00.000</div>
-                    </div>
-                    
-                    <div class="video-column">
-                        <h3>Subtitle Editor</h3>
-                        <div class="editor-container" id="editorContainer">
-                            <div class="empty-state">
-                                No subtitles yet. Add your first subtitle or wait for automatic transcription to complete.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Print Button -->
+    <div class="btn-container">
+        <button onclick="window.print()" class="btn">🖨️ Print Handbook</button>
     </div>
 
-    <script>
-        class VideoTranscriber {
-            constructor() {
-                this.subtitles = [];
-                this.currentVideoFile = null;
-                this.init();
-            }
+    <div class="container">
+        <h1 class="main-title">SCHOOL BADMINTON HANDBOOK</h1>
+        <p class="subtitle">Prepared for Grade 11 & 12 Students | SHS PE Department</p>
+        
+        <div class="main-content">
+            
+            <!-- START OF HANDBOOK CONTENT -->
+            <!-- Formatting: Arial, 12pt, Justified, 1.5 Spacing -->
+            <div class="handbook-body">
 
-            init() {
-                this.bindEvents();
-                this.updateVideoTime();
-                this.checkBackendConnection();
-                this.initAudio();
-            }
+                <!-- Page 1 Intro -->
+                <div class="handbook-page">
+                    <h1>1. INTRODUCTION</h1>
+                    <p>The purpose of this handbook is to provide Grade 11 and 12 students with a comprehensive guide to the sport of Badminton. It covers technical skills, tactical strategies, safety procedures, and the rules required to participate effectively in a school setting. This book provides students with an organized and accessible way to learn not only how to play the game but also how to appreciate the discipline, speed, and mental agility required to succeed.</p>
+                    <p>Badminton is often misunderstood as a gentle "backyard game," but at a competitive level, it is the fastest racket sport in the world. Shuttles have been clocked at speeds exceeding 400 km/h. However, school-level badminton focuses on developing agility, hand-eye coordination, cardiovascular endurance, and sportsmanship.</p>
 
-            initAudio() {
-                const bgMusic = document.getElementById('bgMusic');
-                bgMusic.volume = 0.1;
-                
-                // Try to play background music on first user interaction
-                document.addEventListener('click', () => {
-                    if (bgMusic.paused) {
-                        bgMusic.play().catch(error => {
-                            console.log('Audio autoplay prevented:', error);
-                        });
-                    }
-                }, { once: true });
-            }
+                    <h2>1.1 What is Badminton?</h2>
+                    <p>Badminton is a racket sport played using a racket to hit a shuttlecock across a net. Although it may be played with larger teams, the most common forms of the game are "singles" (with one player per side) and "doubles" (with two players per side). Points are scored by striking the shuttlecock with the racket and landing it within the opposing side's half of the court.</p>
 
-            async checkBackendConnection() {
-                try {
-                    const response = await fetch('http://localhost:5000/health', { 
-                        method: 'GET',
-                        timeout: 5000 
-                    });
+                    <h2>1.2 Importance of Badminton</h2>
+                    <p>Badminton is an excellent method for developing physical fitness and mental acuity. It is a high-intensity interval sport that requires players to make split-second decisions while moving rapidly around the court.</p>
+                    <p><strong>Physical Benefits:</strong></p>
+                    <ul>
+                        <li><strong>Cardiovascular Health:</strong> The constant movement keeps the heart rate up.</li>
+                        <li><strong>Agility and Balance:</strong> Players must lunge, jump, and twist, improving core stability.</li>
+                        <li><strong>Reflexes:</strong> The speed of the shuttle requires fast reaction times.</li>
+                    </ul>
+                    <p><strong>Mental and Social Benefits:</strong></p>
+                    <ul>
+                        <li><strong>Strategic Thinking:</strong> Players must outsmart their opponents by placing shots in difficult areas.</li>
+                        <li><strong>Stress Relief:</strong> The physical exertion helps release endorphins.</li>
+                        <li><strong>Character Building:</strong> It teaches athletes the values of Integrity, Focus, and Respect.</li>
+                    </ul>
+                </div>
+
+                <!-- Page 2 Dimensions -->
+                <div class="handbook-page">
+                    <h1>2. COURT DIMENSIONS</h1>
+                    <p>Official badminton training and matches take place on a rectangular court divided by a net. Understanding the boundaries is the first step to mastering the game.</p>
                     
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (!data.vosk_model_loaded) {
-                            console.warn('Backend is running but Vosk model is not loaded');
-                        }
-                        console.log('Backend connection successful');
-                    } else {
-                        this.showBackendWarning();
-                    }
-                } catch (error) {
-                    this.showBackendWarning();
-                }
-            }
+                    <div class="image-placeholder">[Diagram: Standard Badminton Court Dimensions]</div>
 
-            showBackendWarning() {
-                const uploadArea = document.getElementById('uploadArea');
-                
-                uploadArea.innerHTML = `
-                    <div class="upload-icon" style="color: var(--danger-color);">⚠️</div>
-                    <div class="upload-text" style="color: var(--danger-color);">Backend Server Not Running</div>
-                    <div class="upload-formats" style="color: var(--text-light);">
-                        Please start the Flask backend server on http://localhost:5000<br>
-                        <small>Run: python app.py</small><br><br>
-                        <button class="btn btn-secondary" onclick="location.reload()">Retry Connection</button>
-                    </div>
-                `;
-                
-                uploadArea.style.pointerEvents = 'auto';
-                uploadArea.onclick = null;
-            }
+                    <h2>2.1 Standard Court Measurements</h2>
+                    <p>The court is marked for both singles and doubles play.</p>
+                    <ul>
+                        <li><strong>Shape:</strong> Rectangular.</li>
+                        <li><strong>Length:</strong> 13.4 meters (44 ft) overall.</li>
+                        <li><strong>Width (Doubles):</strong> 6.1 meters (20 ft).</li>
+                        <li><strong>Width (Singles):</strong> 5.18 meters (17 ft).</li>
+                        <li><strong>The Net:</strong> The top of the net is 1.55 meters (5 ft 1 in) high at the edges and 1.524 meters (5 ft) high in the center.</li>
+                        <li><strong>Service Courts:</strong> Divided into Left and Right service courts.</li>
+                        <li><strong>Short Service Line:</strong> 1.98 meters (6.5 ft) from the net.</li>
+                    </ul>
 
-            bindEvents() {
-                // Upload area events
-                const uploadArea = document.getElementById('uploadArea');
-                const fileInput = document.getElementById('fileInput');
+                    <h2>2.2 Adapted School Setup</h2>
+                    <p>Since not all schools have professional flooring or permanent posts, a safe and effective training area can be adapted using the school gym:</p>
+                    <ul>
+                        <li><strong>Floor Markings:</strong> Most multi-purpose gyms already have badminton lines painted (usually white or yellow). If not, use non-residue floor tape to mark the 13.4m x 6.1m rectangle.</li>
+                        <li><strong>Portable Nets:</strong> Use weighted portable net posts. Ensure the bases are heavy enough so they do not tip over if a player accidentally bumps into the net.</li>
+                        <li><strong>Ceiling Height:</strong> Ensure the gym ceiling is high enough (ideally 9 meters or more) so the shuttle does not hit lights or beams during high clears.</li>
+                        <li><strong>Safety Zones:</strong> Keep at least 1 meter of clear space around the outside of the court lines to prevent students from running into walls or bleachers.</li>
+                    </ul>
+                </div>
 
-                uploadArea.addEventListener('click', () => fileInput.click());
-                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
-                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
-                uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+                <!-- Page 3 Equipment -->
+                <div class="handbook-page">
+                    <h1>3. EQUIPMENT</h1>
+                    <p>Badminton requires specific equipment to ensure playability and safety. For school-level badminton, the focus is on durability and functionality rather than professional-grade expense.</p>
 
-                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+                    <h2>3.1 The Racket</h2>
+                    <p>The racket is the extension of the player’s arm.</p>
+                    <ul>
+                        <li><strong>Head:</strong> The oval part containing the strings.</li>
+                        <li><strong>Shaft:</strong> The long rod connecting the handle to the head.</li>
+                        <li><strong>Handle/Grip:</strong> The part the player holds.</li>
+                        <li><strong>School Standard:</strong> Schools typically use aluminum or graphite composite rackets. These are lightweight yet durable enough to withstand accidental clashes with the floor or other rackets.</li>
+                    </ul>
 
-                // Video events
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.addEventListener('timeupdate', this.updateVideoTime.bind(this));
-                videoPlayer.addEventListener('timeupdate', this.updateActiveSubtitle.bind(this));
+                    <h2>3.2 The Shuttlecock</h2>
+                    <p>Also known as the "birdie," this is the projectile used in the game.</p>
+                    <ul>
+                        <li><strong>Feather Shuttles:</strong> Used in professional tournaments. They provide the best flight but break easily.</li>
+                        <li><strong>Nylon/Plastic Shuttles:</strong> <strong>Recommended for Schools.</strong> These are durable, consistent, and cost-effective. They act similarly to feathers but last much longer during practice drills.</li>
+                    </ul>
 
-                // Global control events
-                document.getElementById('addSubtitleBtn').addEventListener('click', this.addSubtitle.bind(this));
-                document.getElementById('syncTimeBtn').addEventListener('click', this.syncToCurrentTime.bind(this));
-                document.getElementById('downloadBtn').addEventListener('click', this.downloadSubtitles.bind(this));
-                document.getElementById('uploadNewBtn').addEventListener('click', this.uploadNewVideo.bind(this));
-            }
+                    <h2>3.3 Clothing and Footwear</h2>
+                    <ul>
+                        <li><strong>Clothing:</strong> Lightweight, breathable athletic wear (t-shirt and shorts) that allows a full range of motion, particularly for the shoulders and legs.</li>
+                        <li><strong>Footwear:</strong> This is the most critical safety item. Students must wear <strong>non-marking indoor court shoes</strong>. Running shoes with thick, raised heels are dangerous in badminton because they increase the risk of ankle rolls during lateral (side-to-side) movements. Court shoes have a lower center of gravity and gum-rubber soles for grip.</li>
+                    </ul>
+                </div>
 
-            handleDragOver(e) {
-                e.preventDefault();
-                document.getElementById('uploadArea').classList.add('dragover');
-            }
+                <!-- Page 4 Safety -->
+                <div class="handbook-page">
+                    <h1>4. SAFETY GUIDELINES</h1>
+                    <p>Badminton is a non-contact sport, but high-speed movement and swinging rackets pose risks. Strict adherence to safety protocols is mandatory.</p>
 
-            handleDragLeave(e) {
-                e.preventDefault();
-                document.getElementById('uploadArea').classList.remove('dragover');
-            }
+                    <h2>4.1 General Safety</h2>
+                    <ul>
+                        <li><strong>The "Eye" Rule:</strong> Students should never look directly back at their partner in doubles when the partner is about to smash from the rear court. This prevents eye injuries from mishits.</li>
+                        <li><strong>Court Clearance:</strong> Remove all stray shuttlecocks from the floor immediately. Stepping on a shuttlecock is a common cause of severe ankle sprains.</li>
+                        <li><strong>Racket Awareness:</strong> Maintain a "safe circle" around you. Be aware of your partner's position to avoid racket clashes or hitting your partner.</li>
+                        <li><strong>Net Safety:</strong> Do not jump over the net. Do not pull on the net mesh.</li>
+                    </ul>
 
-            handleDrop(e) {
-                e.preventDefault();
-                document.getElementById('uploadArea').classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    this.processFile(files[0]);
-                }
-            }
+                    <h2>4.2 Warm-Up Routine (10–12 Minutes)</h2>
+                    <p>A proper warm-up increases muscle temperature and reduces injury risk.</p>
+                    <ol>
+                        <li><strong>Pulse Raiser (3 mins):</strong> Light jogging around the gym or skipping rope.</li>
+                        <li><strong>Joint Mobility (3 mins):</strong> Wrist rotations (crucial for badminton), Arm circles (small to large), Ankle rotations, Neck rolls.</li>
+                        <li><strong>Dynamic Stretching (4 mins):</strong> Lunges with a twist, High knees, Butt kicks, Side shuffles.</li>
+                        <li><strong>Shadow Badminton (2 mins):</strong> Practicing footwork and swing mechanics without a shuttlecock to engage muscle memory.</li>
+                    </ol>
+                </div>
 
-            handleFileSelect(e) {
-                if (e.target.files.length > 0) {
-                    this.processFile(e.target.files[0]);
-                }
-            }
+                <!-- Page 5 Basic Skills - Grip -->
+                <div class="handbook-page">
+                    <h1>5. BASIC SKILLS: THE GRIP</h1>
+                    <p>The correct grip is the foundation of all badminton strokes. Using an incorrect "panhandle" (frying pan) grip limits wrist movement and power.</p>
 
-            processFile(file) {
-                if (!file.type.startsWith('video/')) {
-                    alert('Please select a valid video file.');
-                    return;
-                }
+                    <h2>5.1 The Forehand Grip (Handshake Grip)</h2>
+                    <p>This is used for shots on the dominant side of the body and for overhead shots.</p>
+                    <ul>
+                        <li><strong>How to hold:</strong> Hold the racket by the shaft with your non-dominant hand. Shake hands with the handle using your dominant hand.</li>
+                        <li><strong>Check:</strong> The "V" formed by your thumb and index finger should be on the top, narrow edge of the handle.</li>
+                        <li><strong>Feel:</strong> The grip should be relaxed. Tighten your fingers only at the moment of impact.</li>
+                    </ul>
 
-                this.currentVideoFile = file;
-                this.showVideoSection();
-                this.loadVideo(file);
-                this.uploadAndTranscribe(file);
-            }
+                    <h2>5.2 The Backhand Grip</h2>
+                    <p>This is used for shots on the non-dominant side of the body.</p>
+                    <ul>
+                        <li><strong>How to hold:</strong> Start with the forehand grip. Rotate the racket slightly so the thumb presses flat against the wide, flat surface of the handle.</li>
+                        <li><strong>Function:</strong> The thumb provides the leverage and power to push the racket forward.</li>
+                        <li><strong>Usage:</strong> Essential for net kills, backhand drives, and backhand serves.</li>
+                    </ul>
+                </div>
 
-            showVideoSection() {
-                document.getElementById('uploadSection').style.display = 'none';
-                document.getElementById('videoSection').style.display = 'block';
-            }
+                <!-- Page 6 Basic Skills - Footwork -->
+                <div class="handbook-page">
+                    <h1>6. BASIC SKILLS: FOOTWORK</h1>
+                    <p>"Badminton is played with the feet, not the hands." If you cannot reach the shuttle in time, you cannot hit a good shot.</p>
 
-            loadVideo(file) {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const videoURL = URL.createObjectURL(file);
-                videoPlayer.src = videoURL;
-            }
+                    <h2>6.1 The Stance (Ready Position)</h2>
+                    <ul>
+                        <li>Feet shoulder-width apart.</li>
+                        <li>Knees slightly bent (loaded and ready to spring).</li>
+                        <li>Weight on the balls of the feet.</li>
+                        <li>Racket held up in front of the chest (not dangling by the knees).</li>
+                    </ul>
 
-            async uploadAndTranscribe(file) {
-                const progressContainer = document.getElementById('progressContainer');
-                const progressBar = document.getElementById('progressBar');
-                const progressText = document.getElementById('progressText');
+                    <h2>6.2 The Asterisk (*) Movement</h2>
+                    <p>Think of the court center as the middle of an asterisk or star. Players always return to the center (the "Base") after every shot.</p>
+                    <ol>
+                        <li><strong>V-Front:</strong> Lunging forward to the left or right net corners. Leading with the racket leg.</li>
+                        <li><strong>Sides:</strong> Shuffling laterally to defend smashes.</li>
+                        <li><strong>V-Back:</strong> Chassé (shuffle) steps backward to the rear corners to hit overhead clears or smashes.</li>
+                    </ol>
 
-                progressContainer.style.display = 'block';
+                    <h2>6.3 The Lunge</h2>
+                    <p>When taking the final step toward the shuttle, especially at the net:</p>
+                    <ul>
+                        <li>Land on the heel first, then roll to the toe.</li>
+                        <li>The knee should not extend past the toes (to protect the joint).</li>
+                        <li>The non-racket arm should be extended behind for counterbalance.</li>
+                    </ul>
+                </div>
 
-                const formData = new FormData();
-                formData.append('video', file);
+                <!-- Page 7 Basic Skills - Serves -->
+                <div class="handbook-page">
+                    <h1>7. BASIC SKILLS: SERVING</h1>
+                    <p>Every point starts with a serve. In badminton, the serve must be hit in an upward direction from below the waist.</p>
 
-                try {
-                    const xhr = new XMLHttpRequest();
+                    <h2>7.1 High Serve (Singles)</h2>
+                    <p><strong>Objective:</strong> To force the opponent to the back of the court.<br>
+                    <strong>Technique:</strong> Stand near the center line. Use a forehand underarm stroke. Swing through fully so the shuttle travels high and deep, landing near the back boundary line.</p>
+
+                    <h2>7.2 Low Serve (Doubles/Singles)</h2>
+                    <p><strong>Objective:</strong> To prevent the opponent from attacking immediately.<br>
+                    <strong>Technique:</strong> Often uses the backhand grip. Hold the shuttle by the feathers. Gently push/tap the shuttle so it skims just over the net and lands on the short service line.</p>
+
+                    <h2>7.3 Flick Serve</h2>
+                    <p><strong>Objective:</strong> To deceive the opponent.<br>
+                    <strong>Technique:</strong> Set up looking like a low serve, but at the last second, use the wrist to "flick" the shuttle over the opponent's head to the back of the court.</p>
+                </div>
+
+                <!-- Page 8 Technical - Overhead -->
+                <div class="handbook-page">
+                    <h1>8. TECHNICAL SKILLS: OVERHEAD STROKES</h1>
+                    <p>Overhead strokes are played from the rear court. The preparation for all overhead strokes should look the same to deceive the opponent.</p>
+
+                    <h2>8.1 The Clear (Defensive & Offensive)</h2>
+                    <p><strong>Goal:</strong> To hit the shuttle high and deep to the opponent's baseline.</p>
+                    <ul>
+                        <li>Turn your body sideways.</li>
+                        <li>Point your non-racket hand at the shuttle.</li>
+                        <li>Contact the shuttle at the highest point possible.</li>
+                        <li>Follow through across the body.</li>
+                    </ul>
+
+                    <h2>8.2 The Drop Shot</h2>
+                    <p><strong>Goal:</strong> To land the shuttle steeply and softly in the opponent's forecourt (near the net).</p>
+                    <p><strong>Technique:</strong> Same preparation as the Clear. However, instead of a full power swing, slow the racket head speed down at the last moment and "slice" or gently push the shuttle.</p>
+                </div>
+
+                <!-- Page 9 Technical - Attacking -->
+                <div class="handbook-page">
+                    <h1>9. TECHNICAL SKILLS: ATTACKING STROKES</h1>
+                    <p>Winning a rally often requires aggression and power.</p>
+
+                    <h2>9.1 The Smash</h2>
+                    <p>The Smash is the most powerful shot in badminton.</p>
+                    <ul>
+                        <li><strong>Goal:</strong> To hit the shuttle steeply downwards into the opponent's court with speed.</li>
+                        <li><strong>Technique:</strong> Explosive movement. Snap the wrist downward at the point of impact. Transfer body weight from the back foot to the front foot.</li>
+                        <li><strong>Target:</strong> Aim for the sidelines (away from the player) or directly at the player's hip (the "awkward zone").</li>
+                    </ul>
+
+                    <h2>9.2 The Drive</h2>
+                    <p><strong>Goal:</strong> A flat, fast shot that travels horizontally over the net.</p>
+                    <p><strong>Technique:</strong> Usually played from the mid-court. The racket is held at chest height. Use a short, sharp swinging motion. Common in Doubles.</p>
+                </div>
+
+                <!-- Page 10 Technical - Net Play -->
+                <div class="handbook-page">
+                    <h1>10. TECHNICAL SKILLS: NET PLAY</h1>
+                    <p>Dominating the front of the court ("the net") is crucial for setting up attacks.</p>
+
+                    <h2>10.1 The Net Shot (Tumbling Net Shot)</h2>
+                    <p>A delicate shot played from the net area that barely clears the tape and tumbles over. Lunge forward with the racket arm extended. Keep the grip loose. Gently "hairpin" or lift the shuttle.</p>
+
+                    <h2>10.2 The Net Kill</h2>
+                    <p>An aggressive shot to finish the rally when the opponent plays a loose net shot that is too high. A short, sharp tap downwards using the wrist. Do not use a full swing.</p>
+
+                    <h2>10.3 The Net Lift</h2>
+                    <p>A defensive shot played when the shuttle is very low at the net. Lunge deeply and scoop the shuttle high up to the back of the opponent's court.</p>
+                </div>
+
+                <!-- Page 11 Tactics -->
+                <div class="handbook-page">
+                    <h1>11. TACTICAL SKILLS</h1>
                     
-                    xhr.upload.addEventListener('progress', (e) => {
-                        if (e.lengthComputable) {
-                            const percentComplete = (e.loaded / e.total) * 100;
-                            progressBar.style.width = percentComplete + '%';
-                            progressText.textContent = `Uploading... ${Math.round(percentComplete)}%`;
-                        }
-                    });
+                    <h2>11.1 Singles Strategy</h2>
+                    <p>Singles is a game of patience and fitness.</p>
+                    <ul>
+                        <li><strong>Move the Opponent:</strong> Do not hit everything to the middle. Use the four corners of the court.</li>
+                        <li><strong>Base Position:</strong> Always return to the center.</li>
+                        <li><strong>Open Space:</strong> Hit to where the opponent isn't.</li>
+                        <li><strong>Rhythm:</strong> Vary the pace. Mix clears with drop shots and smashes.</li>
+                    </ul>
 
-                    xhr.addEventListener('load', () => {
-                        if (xhr.status === 200) {
-                            progressText.textContent = 'Processing...';
-                            try {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    this.loadTranscription(response.subtitle_file);
-                                } else {
-                                    alert('Transcription failed: ' + (response.error || 'Unknown error'));
-                                    progressContainer.style.display = 'none';
-                                }
-                            } catch (e) {
-                                alert('Invalid response from server. Please check if the backend is running.');
-                                progressContainer.style.display = 'none';
-                            }
-                        } else {
-                            alert(`Upload failed with status ${xhr.status}. Please check if the backend is running on http://localhost:5000`);
-                            progressContainer.style.display = 'none';
-                        }
-                    });
+                    <h2>11.2 Doubles Strategy</h2>
+                    <p>Doubles is a game of speed, attack, and rotation.</p>
+                    <ul>
+                        <li><strong>Attacking Formation:</strong> One player is at the net to intercept loose shots, while the partner is at the back smashing.</li>
+                        <li><strong>Defensive Formation:</strong> When your team lifts the shuttle, spread out side-by-side to cover the full width of the court.</li>
+                        <li><strong>Communication:</strong> Talk to your partner. Call "Mine!" or "Yours!".</li>
+                    </ul>
+                </div>
 
-                    xhr.addEventListener('error', () => {
-                        alert('Connection failed. Please make sure the backend server is running on http://localhost:5000');
-                        progressContainer.style.display = 'none';
-                    });
+                <!-- Page 12 Rules -->
+                <div class="handbook-page">
+                    <h1>12. RULES OF THE GAME</h1>
+                    <p>School badminton follows the standard BWF (Badminton World Federation) rules, slightly simplified for time constraints.</p>
 
-                    xhr.addEventListener('timeout', () => {
-                        alert('Upload timed out. Please try with a smaller file or check your connection.');
-                        progressContainer.style.display = 'none';
-                    });
+                    <h2>12.1 Scoring System (Rally Point)</h2>
+                    <ul>
+                        <li><strong>Points:</strong> A match is best of 3 games. Each game is played to <strong>21 points</strong>.</li>
+                        <li><strong>Rally Point:</strong> A point is scored on every serve, regardless of who served.</li>
+                        <li><strong>Winning:</strong> The side that reaches 21 points first wins the game (must win by 2 points). Cap is at 30 points (sudden death at 29-29).</li>
+                        <li><strong>Interval:</strong> A 60-second break is allowed when the leading score reaches 11 points.</li>
+                    </ul>
 
-                    xhr.open('POST', 'http://localhost:5000/upload');
-                    xhr.timeout = 300000;
-                    xhr.send(formData);
+                    <h2>12.2 Service Rules</h2>
+                    <ul>
+                        <li>The server must stand inside the service court.</li>
+                        <li>The shuttle must be hit <strong>below the waist</strong>.</li>
+                        <li>Both feet must remain in contact with the floor.</li>
+                        <li><strong>Singles Serve:</strong> Even score = Right. Odd score = Left.</li>
+                        <li><strong>Doubles Serve:</strong> Similar to singles, but players rotate courts only when they win a point *on their own serve*.</li>
+                    </ul>
 
-                } catch (error) {
-                    alert('Error uploading file: ' + error.message + '\n\nPlease make sure the backend server is running on http://localhost:5000');
-                    progressContainer.style.display = 'none';
-                }
-            }
+                    <h2>12.3 Faults</h2>
+                    <p>A point is awarded to the opponent if: The shuttle lands OUT; passes THROUGH or UNDER the net; a player touches the net; or hits the shuttle twice in succession.</p>
+                </div>
 
-            async loadTranscription(filename) {
-                try {
-                    const response = await fetch(`http://localhost:5000/subtitles/${filename}`);
-                    if (response.ok) {
-                        const vttContent = await response.text();
-                        this.parseVTT(vttContent);
-                        this.renderEditor();
-                        this.updateVideoSubtitles();
-                        document.getElementById('progressContainer').style.display = 'none';
-                    }
-                } catch (error) {
-                    console.error('Error loading transcription:', error);
-                    document.getElementById('progressContainer').style.display = 'none';
-                }
-            }
+                <!-- Page 13 Officiating -->
+                <div class="handbook-page">
+                    <h1>13. OFFICIATING</h1>
+                    <p>In school tournaments, students often act as officials. Proper officiating ensures fairness.</p>
 
-            parseVTT(vttContent) {
-                const lines = vttContent.split('\n');
-                let currentSubtitle = null;
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
+                    <h2>13.1 The Umpire</h2>
+                    <p>Sits on a high chair. Announces score, watches for faults, and maintains order.</p>
+
+                    <h2>13.2 Service Judge</h2>
+                    <p>Watches specifically for service faults (shuttle struck above the waist).</p>
+
+                    <h2>13.3 Line Judges & Signals</h2>
+                    <ul>
+                        <li><strong>OUT:</strong> Extend both arms horizontally to the side.</li>
+                        <li><strong>IN:</strong> Point the right hand/index finger at the line.</li>
+                        <li><strong>Unsighted:</strong> Cover the eyes with hands.</li>
+                    </ul>
+                </div>
+
+                <!-- Page 14 Nutrition -->
+                <div class="handbook-page">
+                    <h1>14. NUTRITION AND HYDRATION</h1>
                     
-                    if (line.includes('-->')) {
-                        const times = line.split('-->');
-                        const start = this.parseTimeToSeconds(times[0].trim());
-                        const end = this.parseTimeToSeconds(times[1].trim());
-                        currentSubtitle = { start, end, text: '' };
-                    } else if (currentSubtitle && line && !line.startsWith('WEBVTT') && !line.match(/^\d+$/)) {
-                        currentSubtitle.text += (currentSubtitle.text ? ' ' : '') + line;
-                    } else if (currentSubtitle && !line) {
-                        this.subtitles.push(currentSubtitle);
-                        currentSubtitle = null;
-                    }
-                }
-                
-                if (currentSubtitle) {
-                    this.subtitles.push(currentSubtitle);
-                }
-            }
+                    <h2>14.1 Hydration</h2>
+                    <ul>
+                        <li><strong>Pre-Match:</strong> Drink 500ml of water 2 hours before playing.</li>
+                        <li><strong>During Match:</strong> Sip water during intervals. Do not gulp large amounts.</li>
+                        <li><strong>Post-Match:</strong> Replenish fluids immediately.</li>
+                    </ul>
 
-            parseTimeToSeconds(timeString) {
-                const parts = timeString.split(':');
-                const seconds = parseFloat(parts[2]);
-                const minutes = parseInt(parts[1]);
-                const hours = parseInt(parts[0]);
-                return hours * 3600 + minutes * 60 + seconds;
-            }
+                    <h2>14.2 Nutrition</h2>
+                    <ul>
+                        <li><strong>Carbohydrates:</strong> Pasta, rice, or whole-grain bread for fuel.</li>
+                        <li><strong>Pre-Game Snack:</strong> A banana or granola bar 45 minutes before playing.</li>
+                        <li><strong>Recovery:</strong> Protein (chicken, eggs, chocolate milk) within 30 minutes after training.</li>
+                    </ul>
+                </div>
 
-            formatTime(seconds) {
-                const hours = Math.floor(seconds / 3600);
-                const minutes = Math.floor((seconds % 3600) / 60);
-                const secs = seconds % 60;
-                const milliseconds = Math.round((secs - Math.floor(secs)) * 1000);
-                const wholeSeconds = Math.floor(secs);
-                
-                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${wholeSeconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-            }
+                <!-- Page 15 Values -->
+                <div class="handbook-page">
+                    <h1>15. VALUES AND SPORTSMANSHIP</h1>
+                    <p>Badminton is known as a "Gentleman’s/Gentlewoman’s Game." Etiquette is just as important as skill.</p>
 
-            addSubtitle() {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const currentTime = videoPlayer.currentTime || 0;
-                
-                const newSubtitle = {
-                    start: currentTime,
-                    end: currentTime + 3,
-                    text: ''
-                };
-                
-                this.subtitles.push(newSubtitle);
-                this.subtitles.sort((a, b) => a.start - b.start);
-                this.renderEditor();
-                this.updateVideoSubtitles();
-            }
+                    <h2>15.1 Core Values</h2>
+                    <ul>
+                        <li><strong>Honesty:</strong> In school games without line judges, players make their own calls. Always give the opponent the benefit of the doubt.</li>
+                        <li><strong>Respect:</strong> Hand over the shuttle politely. Do not kick the shuttle under the net.</li>
+                        <li><strong>Self-Control:</strong> Never throw a racket in anger. It is dangerous and disrespectful.</li>
+                    </ul>
 
-            syncToCurrentTime() {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const currentTime = videoPlayer.currentTime;
-                
-                const activeIndex = this.getActiveSubtitleIndex();
-                if (activeIndex !== -1) {
-                    this.subtitles[activeIndex].start = currentTime;
-                    this.renderEditor();
-                    this.updateVideoSubtitles();
-                }
-            }
+                    <h2>15.2 Shaking Hands</h2>
+                    <p>Start of match: Shake hands with opponent. End of match: Shake hands immediately, regardless of result. Look the opponent in the eye and say "Good Game."</p>
+                </div>
 
-            getActiveSubtitleIndex() {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const currentTime = videoPlayer.currentTime;
-                
-                return this.subtitles.findIndex(subtitle => 
-                    currentTime >= subtitle.start && currentTime <= subtitle.end
-                );
-            }
-
-            renderEditor() {
-                const container = document.getElementById('editorContainer');
-                
-                if (this.subtitles.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No subtitles yet. Add your first subtitle or wait for automatic transcription to complete.</div>';
-                    return;
-                }
-                
-                container.innerHTML = this.subtitles.map((subtitle, index) => `
-                    <div class="subtitle-item" data-index="${index}">
-                        <div class="subtitle-controls">
-                            <button class="btn btn-secondary" onclick="app.playSubtitle(${index})">Play</button>
-                            <button class="btn btn-secondary" onclick="app.copySubtitle(${index})">Copy</button>
-                            <button class="btn btn-danger" onclick="app.deleteSubtitle(${index})">Delete</button>
-                        </div>
-                        <div class="time-inputs">
-                            <input type="text" class="time-input" value="${this.formatTime(subtitle.start)}" 
-                                   onchange="app.updateSubtitleTime(${index}, 'start', this.value)">
-                            <span style="color: var(--text-light);">→</span>
-                            <input type="text" class="time-input" value="${this.formatTime(subtitle.end)}" 
-                                   onchange="app.updateSubtitleTime(${index}, 'end', this.value)">
-                        </div>
-                        <textarea class="subtitle-text" placeholder="Enter subtitle text..." 
-                                  onchange="app.updateSubtitleText(${index}, this.value)">${subtitle.text}</textarea>
-                    </div>
-                `).join('');
-            }
-
-            playSubtitle(index) {
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.currentTime = this.subtitles[index].start;
-                videoPlayer.play();
-            }
-
-            copySubtitle(index) {
-                const original = this.subtitles[index];
-                const copy = {
-                    start: original.end,
-                    end: original.end + (original.end - original.start),
-                    text: original.text
-                };
-                
-                this.subtitles.splice(index + 1, 0, copy);
-                this.renderEditor();
-                this.updateVideoSubtitles();
-            }
-
-            deleteSubtitle(index) {
-                this.subtitles.splice(index, 1);
-                this.renderEditor();
-                this.updateVideoSubtitles();
-            }
-
-            updateSubtitleTime(index, type, value) {
-                const seconds = this.parseTimeToSeconds(value);
-                if (!isNaN(seconds)) {
-                    this.subtitles[index][type] = seconds;
-                    this.updateVideoSubtitles();
-                }
-            }
-
-            updateSubtitleText(index, text) {
-                this.subtitles[index].text = text;
-                this.updateVideoSubtitles();
-            }
-
-            updateVideoTime() {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const timeDisplay = document.getElementById('videoTime');
-                
-                if (videoPlayer && timeDisplay) {
-                    const currentTime = videoPlayer.currentTime || 0;
-                    timeDisplay.textContent = this.formatTime(currentTime);
-                }
-                
-                requestAnimationFrame(() => this.updateVideoTime());
-            }
-
-            updateActiveSubtitle() {
-                const activeIndex = this.getActiveSubtitleIndex();
-                const items = document.querySelectorAll('.subtitle-item');
-                
-                items.forEach((item, index) => {
-                    item.classList.toggle('active', index === activeIndex);
-                });
-            }
-
-            generateVTT() {
-                let vtt = 'WEBVTT\n\n';
-                
-                this.subtitles.forEach((subtitle, index) => {
-                    const startTime = this.formatTime(subtitle.start);
-                    const endTime = this.formatTime(subtitle.end);
+                <!-- Page 16 Training Plan -->
+                <div class="handbook-page">
+                    <h1>16. SAMPLE WEEKLY TRAINING PLAN</h1>
                     
-                    vtt += `${index + 1}\n`;
-                    vtt += `${startTime} --> ${endTime}\n`;
-                    vtt += `${subtitle.text}\n\n`;
-                });
-                
-                return vtt;
-            }
+                    <p><strong>Monday: Footwork & Conditioning</strong><br>
+                    Warm-up: Skipping rope. Drill: Shadow Badminton. Fitness: Suicides.</p>
 
-            updateVideoSubtitles() {
-                const videoPlayer = document.getElementById('videoPlayer');
-                const track = document.getElementById('subtitleTrack');
-                
-                const vttContent = this.generateVTT();
-                const blob = new Blob([vttContent], { type: 'text/vtt' });
-                const url = URL.createObjectURL(blob);
-                
-                // Remove old track and add new one
-                if (track.src) {
-                    URL.revokeObjectURL(track.src);
-                }
-                track.src = url;
-            }
+                    <p><strong>Tuesday: Technical Skills (Strokes)</strong><br>
+                    Focus: Clears and Drops. Drill: Partner feeds. Game: Half-court singles.</p>
 
-            downloadSubtitles() {
-                const vttContent = this.generateVTT();
-                const blob = new Blob([vttContent], { type: 'text/vtt' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'subtitles.vtt';
-                a.click();
-                
-                URL.revokeObjectURL(url);
-            }
+                    <p><strong>Wednesday: Active Recovery</strong><br>
+                    Light stretching, yoga, or a 20-minute walk.</p>
 
-            uploadNewVideo() {
-                // Reset application state
-                this.subtitles = [];
-                this.currentVideoFile = null;
-                
-                // Reset UI
-                document.getElementById('uploadSection').style.display = 'block';
-                document.getElementById('videoSection').style.display = 'none';
-                document.getElementById('progressContainer').style.display = 'none';
-                document.getElementById('fileInput').value = '';
-                
-                const videoPlayer = document.getElementById('videoPlayer');
-                if (videoPlayer.src) {
-                    URL.revokeObjectURL(videoPlayer.src);
-                    videoPlayer.src = '';
-                }
-            }
-        }
+                    <p><strong>Thursday: Net Play & Tactics</strong><br>
+                    Focus: Net shots and Lifts. Drill: "Net Wars". Strategy: Doubles positioning.</p>
 
-        // Initialize the application
-        const app = new VideoTranscriber();
+                    <p><strong>Friday: Match Play</strong><br>
+                    Main: King/Queen of the Court. Cool-down: Extensive static stretching.</p>
+                </div>
 
-        // Set up background video error handling
-        document.getElementById('bgVideo').addEventListener('error', function() {
-            console.log('Background video failed to load');
-            // Continue without background video
-        });
-    </script>
+                <!-- Page 17 Conclusion -->
+                <div class="handbook-page">
+                    <h1>17. CONCLUSION</h1>
+                    <p>This handbook serves as a roadmap for the Senior High School Badminton Program. By following the guidelines regarding dimensions, equipment, skills, and safety, students are provided with a safe environment to excel.</p>
+                    <p>Badminton teaches resilience. The rally is not over until the shuttle touches the floor. This mentality—scrambling for every shot, supporting your partner, and maintaining focus under fatigue—translates directly to academic and personal success.</p>
+                    <p style="text-align: center; margin-top: 50px; font-weight: bold; font-size: 1.2rem; color: var(--success-color);">"Play Hard. Play Fair. Respect the Game."</p>
+                </div>
+
+            </div>
+            <!-- END OF HANDBOOK CONTENT -->
+
+        </div>
+    </div>
 </body>
 </html>
